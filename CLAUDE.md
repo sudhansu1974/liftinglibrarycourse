@@ -2,6 +2,13 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## IMPORTANT: Documentation First
+
+**ALWAYS** refer to the relevant documentation files in the `/docs` directory before generating any code. These docs contain project-specific coding standards and conventions that must be followed.
+
+Current documentation:
+- `docs/ui.md` - UI component and date formatting standards
+
 ## Build and Development Commands
 
 ```bash

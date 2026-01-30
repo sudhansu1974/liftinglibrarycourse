@@ -10,7 +10,10 @@
       "mcp__neon__list_branch_computes",
       "mcp__neon__get_connection_string",
       "Bash(PGPASSWORD='npg_pqZQL49HYGUO' psql:*)",
-      "Bash(npx tsx:*)"
+      "Bash(npx tsx:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm install:*)",
+      "Bash(npx shadcn@latest add:*)"
     ]
   }
 }
