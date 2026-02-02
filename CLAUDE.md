@@ -8,6 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Current documentation:
 - `docs/ui.md` - UI component and date formatting standards
+- `docs/data-fetching.md` - Data fetching and database query standards (CRITICAL)
 
 ## Build and Development Commands
 
@@ -39,5 +40,6 @@ This is a Next.js App Router project. Key conventions:
 
 ```
 src/app/           # App Router - pages, layouts, and route handlers
+src/data/          # Database query helper functions (Drizzle ORM)
 public/            # Static assets served at root
 ```

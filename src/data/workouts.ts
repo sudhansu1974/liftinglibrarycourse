@@ -1,0 +1,72 @@
+import { db } from "@/db";
+import { workouts, workoutExercises, sets } from "@/db/schema";
+import { eq, and } from "drizzle-orm";
+import { getCurrentUserId } from "@/lib/auth";
+
+export type SetInput = {
+  weight: string;
+  reps: number;
+  isWarmup: boolean;
+};
+
+export async function createWorkoutWithExercise(
+  date: string,
+  exerciseDefinitionId: number,
+  setsData: SetInput[]
+) {
+  const userId = await getCurrentUserId();
+
+  return db.transaction(async (tx) => {
+    const [workout] = await tx
+      .insert(workouts)
+      .values({
+        userId,
+        workoutDate: date,
+      })
+      .returning();
+
+    const [workoutExercise] = await tx
+      .insert(workoutExercises)
+      .values({
+        workoutId: workout.id,
+        exerciseDefinitionId,
+        order: 0,
+      })
+      .returning();
+
+    if (setsData.length > 0) {
+      await tx.insert(sets).values(
+        setsData.map((set, index) => ({
+          workoutExerciseId: workoutExercise.id,
+          setNumber: index + 1,
+          weight: set.weight,
+          reps: set.reps,
+          isWarmup: set.isWarmup,
+        }))
+      );
+    }
+
+    return workout;
+  });
+}
+
+export async function getUserWorkoutsByDate(date: string) {
+  const userId = await getCurrentUserId();
+
+  const result = await db.query.workouts.findMany({
+    where: and(eq(workouts.userId, userId), eq(workouts.workoutDate, date)),
+    with: {
+      workoutExercises: {
+        orderBy: (workoutExercises, { asc }) => [asc(workoutExercises.order)],
+        with: {
+          exerciseDefinition: true,
+          sets: {
+            orderBy: (sets, { asc }) => [asc(sets.setNumber)],
+          },
+        },
+      },
+    },
+  });
+
+  return result;
+}
