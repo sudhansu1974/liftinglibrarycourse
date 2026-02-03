@@ -11,6 +11,7 @@ Current documentation:
 - `docs/data-fetching.md` - Data fetching and database query standards (CRITICAL)
 - `docs/data-mutations.md` - Data mutation and server action standards (CRITICAL)
 - `docs/auth.md` - Authentication standards (Clerk)
+- `docs/routing.md` - Routing and route protection standards
 
 ## Build and Development Commands
 
