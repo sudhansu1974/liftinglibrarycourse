@@ -1,4 +1,5 @@
 import { format } from "date-fns";
+import Link from "next/link";
 import {
   Card,
   CardContent,
@@ -6,10 +7,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { getUserWorkoutsByDate } from "@/data/workouts";
-import { getAllExerciseDefinitions } from "@/data/exercises";
 import { DatePicker } from "./date-picker";
-import { LogWorkoutDialog } from "./log-workout-dialog";
 
 interface DashboardPageProps {
   searchParams: Promise<{ date?: string }>;
@@ -20,10 +20,7 @@ export default async function DashboardPage({
 }: DashboardPageProps) {
   const params = await searchParams;
   const dateStr = params.date || format(new Date(), "yyyy-MM-dd");
-  const [workouts, exercises] = await Promise.all([
-    getUserWorkoutsByDate(dateStr),
-    getAllExerciseDefinitions(),
-  ]);
+  const workouts = await getUserWorkoutsByDate(dateStr);
 
   const displayDate = format(new Date(dateStr + "T00:00:00"), "do MMM yyyy");
 
@@ -33,7 +30,11 @@ export default async function DashboardPage({
         <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
         <div className="flex items-center gap-4">
           <DatePicker currentDate={dateStr} />
-          <LogWorkoutDialog currentDate={dateStr} exercises={exercises} />
+          <Button asChild>
+            <Link href={`/dashboard/workout/new?date=${dateStr}`}>
+              Log New Workout
+            </Link>
+          </Button>
         </div>
       </div>
 

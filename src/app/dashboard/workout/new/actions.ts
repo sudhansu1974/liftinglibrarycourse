@@ -10,28 +10,23 @@ const setSchema = z.object({
   isWarmup: z.boolean(),
 });
 
-const logWorkoutSchema = z.object({
+const createWorkoutSchema = z.object({
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format"),
   exerciseDefinitionId: z.coerce.number().int().positive("Exercise is required"),
   sets: z.array(setSchema).min(1, "At least one set is required"),
 });
 
-export type LogWorkoutState = {
+export type ActionResult = {
   success: boolean;
   error?: string;
 };
 
-export async function logWorkoutAction(
-  _prevState: LogWorkoutState,
-  formData: FormData
-): Promise<LogWorkoutState> {
-  const rawData = {
-    date: formData.get("date"),
-    exerciseDefinitionId: formData.get("exerciseDefinitionId"),
-    sets: JSON.parse(formData.get("sets") as string),
-  };
-
-  const result = logWorkoutSchema.safeParse(rawData);
+export async function createWorkoutAction(data: {
+  date: string;
+  exerciseDefinitionId: number;
+  sets: { weight: string; reps: number; isWarmup: boolean }[];
+}): Promise<ActionResult> {
+  const result = createWorkoutSchema.safeParse(data);
 
   if (!result.success) {
     return {
@@ -51,7 +46,7 @@ export async function logWorkoutAction(
 
     return { success: true };
   } catch (error) {
-    console.error("Failed to log workout:", error);
+    console.error("Failed to create workout:", error);
     return {
       success: false,
       error: "Failed to save workout. Please try again.",

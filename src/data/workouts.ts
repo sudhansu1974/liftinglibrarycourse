@@ -16,38 +16,36 @@ export async function createWorkoutWithExercise(
 ) {
   const userId = await getCurrentUserId();
 
-  return db.transaction(async (tx) => {
-    const [workout] = await tx
-      .insert(workouts)
-      .values({
-        userId,
-        workoutDate: date,
-      })
-      .returning();
+  const [workout] = await db
+    .insert(workouts)
+    .values({
+      userId,
+      workoutDate: date,
+    })
+    .returning();
 
-    const [workoutExercise] = await tx
-      .insert(workoutExercises)
-      .values({
-        workoutId: workout.id,
-        exerciseDefinitionId,
-        order: 0,
-      })
-      .returning();
+  const [workoutExercise] = await db
+    .insert(workoutExercises)
+    .values({
+      workoutId: workout.id,
+      exerciseDefinitionId,
+      order: 0,
+    })
+    .returning();
 
-    if (setsData.length > 0) {
-      await tx.insert(sets).values(
-        setsData.map((set, index) => ({
-          workoutExerciseId: workoutExercise.id,
-          setNumber: index + 1,
-          weight: set.weight,
-          reps: set.reps,
-          isWarmup: set.isWarmup,
-        }))
-      );
-    }
+  if (setsData.length > 0) {
+    await db.insert(sets).values(
+      setsData.map((set, index) => ({
+        workoutExerciseId: workoutExercise.id,
+        setNumber: index + 1,
+        weight: set.weight,
+        reps: set.reps,
+        isWarmup: set.isWarmup,
+      }))
+    );
+  }
 
-    return workout;
-  });
+  return workout;
 }
 
 export async function getUserWorkoutsByDate(date: string) {
