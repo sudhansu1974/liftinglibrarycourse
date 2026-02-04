@@ -50,28 +50,34 @@ export default async function DashboardPage({
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {workouts.map((workout) =>
               workout.workoutExercises.map((exercise) => (
-                <Card key={exercise.id}>
-                  <CardHeader>
-                    <CardTitle>{exercise.exerciseDefinition.name}</CardTitle>
-                    <CardDescription>
-                      {exercise.sets.length} sets logged
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-1">
-                      {exercise.sets.map((set) => (
-                        <li
-                          key={set.id}
-                          className="text-sm text-muted-foreground"
-                        >
-                          Set {set.setNumber}: {set.weight} lbs x {set.reps}{" "}
-                          reps
-                          {set.isWarmup && " (warmup)"}
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
+                <Link
+                  key={exercise.id}
+                  href={`/dashboard/workout/${workout.id}`}
+                  className="block transition-transform hover:scale-105"
+                >
+                  <Card className="h-full cursor-pointer">
+                    <CardHeader>
+                      <CardTitle>{exercise.exerciseDefinition.name}</CardTitle>
+                      <CardDescription>
+                        {exercise.sets.length} sets logged
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <ul className="space-y-1">
+                        {exercise.sets.map((set) => (
+                          <li
+                            key={set.id}
+                            className="text-sm text-muted-foreground"
+                          >
+                            Set {set.setNumber}: {set.weight} lbs x {set.reps}{" "}
+                            reps
+                            {set.isWarmup && " (warmup)"}
+                          </li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                  </Card>
+                </Link>
               ))
             )}
           </div>
