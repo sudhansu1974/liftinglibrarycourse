@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { format, parse } from "date-fns";
 import { CalendarIcon } from "lucide-react";
@@ -18,6 +19,7 @@ interface DatePickerProps {
 export function DatePicker({ currentDate }: DatePickerProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [open, setOpen] = useState(false);
 
   const date = parse(currentDate, "yyyy-MM-dd", new Date());
 
@@ -26,11 +28,12 @@ export function DatePicker({ currentDate }: DatePickerProps) {
       const params = new URLSearchParams(searchParams.toString());
       params.set("date", format(newDate, "yyyy-MM-dd"));
       router.push(`/dashboard?${params.toString()}`);
+      setOpen(false);
     }
   };
 
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button variant="outline" className="w-[240px] justify-start">
           <CalendarIcon className="mr-2 h-4 w-4" />
